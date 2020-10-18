@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
 import formatCurrency from '../util';
 import Fade from 'react-reveal/Fade';
+import { createOrder } from '../actions/orderActions'
+import { useSelector, useDispatch } from 'react-redux'
 
 
-const Cart = ({ cartItems, removeFromCart, makeOrder }) => {
+const Cart = ({ removeFromCart }) => {
+    const [doOrder, setDoOrder] = useState(true);
     const [checkout, setCheckout] = useState(false);
     const [details, setDetails] = useState({ name: "", email: "", address: "" });
+    const dispatch = useDispatch();
+    const cartItems = useSelector(state => state.cartReducer.cartItems)
 
-    const createOrder = (e) => {
-        e.preventDefault();
+    const createdOrder = () => {
         const order = {
             name: details.name,
             email: details.email,
             address: details.address,
             cartItems: cartItems,
+            total: cartItems.reduce((a, c) => a + c.price * c.count, 0),
         };
-        makeOrder(order);
+        if (doOrder) {
+            dispatch(createOrder(order));
+        }
+
     }
+    
 
     const handleInput = (e) => {
         setDetails({ ...details, [e.target.name]: e.target.value })
-        console.log(details)
     }
     return (
         <div>
@@ -70,7 +78,7 @@ const Cart = ({ cartItems, removeFromCart, makeOrder }) => {
                         {checkout && (
                             <div className="cart">
                                 <Fade right cascade>
-                                    <form onSubmit={createOrder}>
+                                    <form onSubmit={createdOrder}>
                                         <ul className="form-container">
                                             <li>
                                                 <label>Email</label>
@@ -100,7 +108,7 @@ const Cart = ({ cartItems, removeFromCart, makeOrder }) => {
                                                 ></input>
                                             </li>
                                             <li>
-                                                <button className="button primary" type="submit">
+                                                <button className="button primary" type="submit" >
                                                     Checkout
                                             </button>
                                             </li>

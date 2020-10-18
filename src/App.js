@@ -7,10 +7,10 @@ import { fetchProducts, filterProduct, sortProduct } from './actions/productActi
 import {addToCart,removeFromCart} from './actions/cartActions';
 
 
+
 function App() {
 
   const [sort, setSort] = useState("");
-  const cartItems = useSelector(state => state.cartReducer.cartItems)
   const dispatch = useDispatch();
   const products = useSelector(state => state.productReducer.items);
   const filtered = useSelector(state => state.productReducer.filteredItems);
@@ -24,9 +24,6 @@ function App() {
     dispatch(removeFromCart(product));
   }
 
-  const makeOrder = () => {
-    alert("Order complete")
-  }
 
   function filterProducts(event) {
     dispatch(filterProduct(products, event.target.value));
@@ -60,7 +57,7 @@ function App() {
             <Products products={filtered} addToCart={addToMyCart} />
           </div>
           <div className="sidebar">
-            <Cart cartItems={cartItems} removeFromCart={removeFromMyCart} makeOrder={makeOrder} />
+            <Cart removeFromCart={removeFromMyCart}/>
           </div>
         </div>
       </main>
